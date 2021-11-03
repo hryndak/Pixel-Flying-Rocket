@@ -37,6 +37,7 @@ public class MoveUp : MonoBehaviour
     {
         ObjectWithScript = GameObject.Find("RocketHolder");
         ButtonsScript = ObjectWithScript.GetComponent<Buttons>();
+        AchievmentsScript = ObjectWithScript.GetComponent<Achievments>();
         BlueFire = GameObject.Find("BlueFire");
         BlueSmoke = GameObject.Find("BlueSmoke");
         StartTransfrom = transform.position;
@@ -53,7 +54,6 @@ public class MoveUp : MonoBehaviour
 
     void Awake()
     {
-        AchievmentsScript = GetComponent<Achievments>();
         Rb = GetComponent<Rigidbody2D>();
     }
 

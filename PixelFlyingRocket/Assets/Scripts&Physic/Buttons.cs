@@ -107,6 +107,10 @@ public class Buttons : MonoBehaviour
         }
 
     }
+    void OnApplicationQuit()
+    {
+        Save();
+    }
     public void Save()
     {
         PlayerPrefs.SetInt("Money", Money);
@@ -229,6 +233,7 @@ public class Buttons : MonoBehaviour
         ShopButton.gameObject.SetActive(true);
         Time.timeScale = 1f;
         Time.fixedDeltaTime = .02f;
+        Save();
     }
     public void OnUtilitesButton()
     {
@@ -380,6 +385,7 @@ public class Buttons : MonoBehaviour
             //Change button with .png
             BBPanel1[0].gameObject.SetActive(false);
             TruePanel1[0].gameObject.SetActive(true);
+            Save();
         }
     }
     public void RocketBuy2()
@@ -393,6 +399,7 @@ public class Buttons : MonoBehaviour
             //Change button with .png
             BBPanel1[1].gameObject.SetActive(false);
             TruePanel1[1].gameObject.SetActive(true);
+            Save();
         }
 
     }
@@ -407,6 +414,7 @@ public class Buttons : MonoBehaviour
             //Change button with .png
             BBPanel1[2].gameObject.SetActive(false);
             TruePanel1[2].gameObject.SetActive(true);
+            Save();
         }
     }
     public void RocketBuy4()
@@ -420,6 +428,7 @@ public class Buttons : MonoBehaviour
             //Change button with .png
             BBPanel1[3].gameObject.SetActive(false);
             TruePanel1[3].gameObject.SetActive(true);
+            Save();
         }
     }
     public void RocketBuy5()
@@ -432,6 +441,7 @@ public class Buttons : MonoBehaviour
             CurrentRocket = 5;
             //Change button with .png
             TruePanel1[4].gameObject.SetActive(true);
+            Save();
         }
     }
     public void LookAt()
@@ -509,6 +519,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[0];
             //Change button with .png
             TruePanel2[0].gameObject.SetActive(true);
+            Save();
         }
     }
     public void EngineBuy2()
@@ -526,6 +537,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[1];
             //Change button with .png
             TruePanel2[1].gameObject.SetActive(true);
+            Save();
         }
     }
     public void EngineBuy3()
@@ -543,6 +555,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[2];
             //Change button with .png
             TruePanel2[2].gameObject.SetActive(true);
+            Save();
         }
     }
     public void EngineBuy4()
@@ -560,6 +573,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[3];
             //Change button with .png
             TruePanel2[3].gameObject.SetActive(true);
+            Save();
         }
     }
     public void EngineBuy5()
@@ -577,6 +591,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[4];
             //Change button with .png
             TruePanel2[4].gameObject.SetActive(true);
+            Save();
         }
     }
     public void EngineBuy6()
@@ -594,6 +609,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[5];
             //Change button with .png
             TruePanel2[5].gameObject.SetActive(true);
+            Save();
         }
     }
     public void BuyButtonsManager()

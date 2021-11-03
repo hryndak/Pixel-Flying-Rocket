@@ -9,6 +9,7 @@ public class Achievments : MonoBehaviour
     public Text[] AchText;
     public GameObject[] achFalse;
     public GameObject[] achTrue;
+    public Animator animator;
     void Start()
     {
         achFalse[0].gameObject.SetActive(true);
@@ -23,6 +24,7 @@ public class Achievments : MonoBehaviour
             AchText[0].color = Color.green;
             achFalse[0].gameObject.SetActive(false);
             achTrue[0].gameObject.SetActive(true);
+            animator.SetBool("isReached", true);
         }
 
         if (AchievmentsList[1] == true)
