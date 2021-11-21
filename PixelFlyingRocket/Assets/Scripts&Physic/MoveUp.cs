@@ -4,11 +4,13 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+
 public class MoveUp : MonoBehaviour
 {
     private Achievments AchievmentsScript;
     private Buttons ButtonsScript;
     private Rigidbody2D Rb;
+
 
     public bool EngineisOn;
     private bool HaveFuel;
@@ -25,7 +27,7 @@ public class MoveUp : MonoBehaviour
     public float BurnRate;
     public float FuelToAdd;
 
-    public int[] EnginePowerChanger;
+    //public int[] EnginePowerChanger;
 
     public Text[] PowerText;
     public Text[] BurnRateText;
@@ -37,7 +39,6 @@ public class MoveUp : MonoBehaviour
     {
         ObjectWithScript = GameObject.Find("RocketHolder");
         ButtonsScript = ObjectWithScript.GetComponent<Buttons>();
-        AchievmentsScript = ObjectWithScript.GetComponent<Achievments>();
         BlueFire = GameObject.Find("BlueFire");
         BlueSmoke = GameObject.Find("BlueSmoke");
         StartTransfrom = transform.position;
@@ -50,6 +51,7 @@ public class MoveUp : MonoBehaviour
         FuelFuncion();
         SmokeFuncion();
         //UIFunc();
+        AchievmentsScript = ObjectWithScript.GetComponent<Achievments>();
     }
 
     void Awake()
@@ -180,7 +182,18 @@ public class MoveUp : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Sattelite"))
         {
+            AchievmentsScript.animator.SetTrigger("isReached");
             AchievmentsScript.AchievmentsList[0] = true;
+        }
+
+        if (col.gameObject.CompareTag("ISS"))
+        {
+            AchievmentsScript.AchievmentsList[3] = true;
+        }
+
+        if (col.gameObject.CompareTag("StartTrig"))
+        {
+            ButtonsScript.changeSound = true;
         }
     }
 }

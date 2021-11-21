@@ -13,11 +13,12 @@ TagManager:
   - Space2
   - Canvas
   - Sattelite
+  - ISS
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - StartTrigger
   - Water
   - UI
   - Glow

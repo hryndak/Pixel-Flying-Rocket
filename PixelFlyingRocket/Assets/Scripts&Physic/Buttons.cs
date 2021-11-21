@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class Buttons : MonoBehaviour
 {
@@ -19,14 +18,21 @@ public class Buttons : MonoBehaviour
     public int CurrentRocket;
 
     public bool[] EngineUnlocked = new bool[6];
-    public int[] EnginePowerChanger;
+    //public int[] EnginePowerChanger;
     public int Money;
     private int percentage;
     public int Power;
 
-    [Header("Save")]
+    [Header("Sounds")]
+
+    public AudioClip RocketSound;
+    public AudioSource SaudioSource;
+    public AudioSource MaudoSource;
+    public bool changeSound;
 
 
+    public Slider Sslider;
+    public Slider Mslider;
 
     [Header("UI")]
     public GameObject NoFuelPanel;
@@ -40,6 +46,8 @@ public class Buttons : MonoBehaviour
     public GameObject UtilitiesButton;
     public GameObject SettingsButton;
     public GameObject Smoke;
+    public GameObject Ach1;
+    public GameObject FasterButton;
 
     public TextMeshProUGUI HeightText;
     public TextMeshProUGUI FuelText;
@@ -58,6 +66,10 @@ public class Buttons : MonoBehaviour
 
     public bool onetime;
     public bool onetime2;
+    public bool HavePowerUp;
+
+    [TextArea(10, 5)]
+    public string Description = "";
 
     void Start()
     {
@@ -73,8 +85,11 @@ public class Buttons : MonoBehaviour
         PlayButton.gameObject.SetActive(true);
         Smoke.gameObject.SetActive(true);
 
+        //audioSource = GetComponent<AudioSource>();
         ObjectWithCraneScript = GameObject.FindWithTag("Crane");
         CraneScript = ObjectWithCraneScript.GetComponent<CraneScript>();
+        Sslider.value = 50f;
+        Mslider.value = 50f;
         Load();
     }
     void Update()
@@ -93,11 +108,27 @@ public class Buttons : MonoBehaviour
         UIFunc();
         MoneyAch();
         BuyButtonsManager();
+        SoundChanger();
+        //AchievementsLoad();
 
-        if (!onetime)
+
+        if (changeSound == true)
         {
-            AddPower();
-            onetime = true;
+            SaudioSource.spatialBlend = 0.5f;
+        }
+        else
+        {
+            SaudioSource.spatialBlend = 0f;
+        }
+
+        if (MoveUpScript.EngineisOn == true && SaudioSource.isPlaying == false)
+        {
+            SaudioSource.Play();
+
+        }
+        else if (MoveUpScript.EngineisOn == false && SaudioSource.isPlaying == true)
+        {
+            SaudioSource.Stop();
         }
 
         if (!onetime2)
@@ -111,20 +142,36 @@ public class Buttons : MonoBehaviour
     {
         Save();
     }
+
+    void SoundChanger()
+    {
+        SaudioSource.volume = Sslider.value;
+        MaudoSource.volume = Mslider.value;
+    }
     public void Save()
     {
+        PlayerPrefs.SetFloat("Music", Mslider.value);
+        PlayerPrefs.SetFloat("SoundsEffects", Sslider.value);
         PlayerPrefs.SetInt("Money", Money);
         PlayerPrefs.SetInt("Rocket", CurrentRocket);
         PlayerPrefsX.SetBoolArray("Engine", EngineUnlocked);
+        AchievementsScript.AchSave();
         PlayerPrefs.SetInt("Power", Power);
+        PlayerPrefsX.SetBool("PowerUp", HavePowerUp);
         PlayerPrefs.Save();
+
     }
     public void Load()
     {
+        Mslider.value = PlayerPrefs.GetFloat("Music");
+        Sslider.value = PlayerPrefs.GetFloat("SoundsEffects");
         Money = PlayerPrefs.GetInt("Money", Money);
         CurrentRocket = PlayerPrefs.GetInt("Rocket", CurrentRocket);
-        EngineUnlocked = PlayerPrefsX.GetBoolArray("Engine", false, 6);
+        EngineUnlocked = PlayerPrefsX.GetBoolArray("Engine");
+        AchievementsScript.AchLoad();
+        HavePowerUp = PlayerPrefsX.GetBool("PowerUp", HavePowerUp);
         Power = PlayerPrefs.GetInt("Power", Power);
+        AchievementsLoad();
     }
     private void ChangeColor()
     {
@@ -180,6 +227,15 @@ public class Buttons : MonoBehaviour
         ShopButton.gameObject.SetActive(false);
         SettingsButton.gameObject.SetActive(false);
 
+        if (HavePowerUp)
+        {
+            FasterButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            FasterButton.gameObject.SetActive(false);
+        }
+
     }
     public void SlowMotionFuncion()
     {
@@ -229,11 +285,13 @@ public class Buttons : MonoBehaviour
         RestartButton.gameObject.SetActive(false);
         UtilitiesButton.gameObject.SetActive(true);
         SettingsButton.gameObject.SetActive(true);
+        FasterButton.gameObject.SetActive(false);
         PlayButton.gameObject.SetActive(true);
         ShopButton.gameObject.SetActive(true);
         Time.timeScale = 1f;
         Time.fixedDeltaTime = .02f;
         Save();
+
     }
     public void OnUtilitesButton()
     {
@@ -372,13 +430,12 @@ public class Buttons : MonoBehaviour
     public void OnFasterButtonClick()
     {
         //Change world time
-        Time.timeScale = 5f;
+        Time.timeScale = 8f;
     }
     public void RocketBuy1()
     {
         if (Money >= 10000)
         {
-            Power += 1000;
             Money -= 10000;
             //Set the right rocket
             CurrentRocket = 1;
@@ -393,7 +450,6 @@ public class Buttons : MonoBehaviour
         if (Money >= 25000)
         {
             Money -= 25000;
-            Power += 2000;
             //Set the right rocket
             CurrentRocket = 2;
             //Change button with .png
@@ -408,7 +464,6 @@ public class Buttons : MonoBehaviour
         if (Money >= 100000)
         {
             Money -= 100000;
-            Power += 4000;
             //Set the right rocket
             CurrentRocket = 3;
             //Change button with .png
@@ -422,7 +477,6 @@ public class Buttons : MonoBehaviour
         if (Money >= 500000)
         {
             Money -= 500000;
-            Power += 6000;
             //Set the right rocket
             CurrentRocket = 4;
             //Change button with .png
@@ -436,7 +490,6 @@ public class Buttons : MonoBehaviour
         if (Money >= 1000000)
         {
             Money -= 1000000;
-            Power += 10000;
             //Set the right rocket
             CurrentRocket = 5;
             //Change button with .png
@@ -477,7 +530,7 @@ public class Buttons : MonoBehaviour
             vcam.Follow = RocketList[5].transform;
         }
     }
-    public void AddPower()
+    /*public void AddPower()
     {
         if (EngineUnlocked[0])
         {
@@ -504,6 +557,7 @@ public class Buttons : MonoBehaviour
             Power += EnginePowerChanger[5];
         }
     }
+    */
     public void EngineBuy1()
     {
         if (Money >= 2000)
@@ -516,10 +570,11 @@ public class Buttons : MonoBehaviour
             EngineUnlocked[3] = false;
             EngineUnlocked[4] = false;
             EngineUnlocked[5] = false;
-            Power += EnginePowerChanger[0];
+            //Power += EnginePowerChanger[0];
             //Change button with .png
             TruePanel2[0].gameObject.SetActive(true);
-            Save();
+            BBPanel2[0].gameObject.SetActive(false);
+
         }
     }
     public void EngineBuy2()
@@ -534,10 +589,10 @@ public class Buttons : MonoBehaviour
             EngineUnlocked[3] = false;
             EngineUnlocked[4] = false;
             EngineUnlocked[5] = false;
-            Power += EnginePowerChanger[1];
+            //Power += EnginePowerChanger[1];
             //Change button with .png
             TruePanel2[1].gameObject.SetActive(true);
-            Save();
+            BBPanel2[1].gameObject.SetActive(false);
         }
     }
     public void EngineBuy3()
@@ -552,10 +607,10 @@ public class Buttons : MonoBehaviour
             EngineUnlocked[3] = false;
             EngineUnlocked[4] = false;
             EngineUnlocked[5] = false;
-            Power += EnginePowerChanger[2];
+            //Power += EnginePowerChanger[2];
             //Change button with .png
             TruePanel2[2].gameObject.SetActive(true);
-            Save();
+            BBPanel2[2].gameObject.SetActive(false);
         }
     }
     public void EngineBuy4()
@@ -570,10 +625,10 @@ public class Buttons : MonoBehaviour
             EngineUnlocked[3] = true;
             EngineUnlocked[4] = false;
             EngineUnlocked[5] = false;
-            Power += EnginePowerChanger[3];
+            //Power += EnginePowerChanger[3];
             //Change button with .png
             TruePanel2[3].gameObject.SetActive(true);
-            Save();
+            BBPanel2[3].gameObject.SetActive(false);
         }
     }
     public void EngineBuy5()
@@ -588,10 +643,10 @@ public class Buttons : MonoBehaviour
             EngineUnlocked[3] = false;
             EngineUnlocked[4] = true;
             EngineUnlocked[5] = false;
-            Power += EnginePowerChanger[4];
+            //Power += EnginePowerChanger[4];
             //Change button with .png
             TruePanel2[4].gameObject.SetActive(true);
-            Save();
+            BBPanel2[4].gameObject.SetActive(false);
         }
     }
     public void EngineBuy6()
@@ -606,10 +661,10 @@ public class Buttons : MonoBehaviour
             EngineUnlocked[3] = false;
             EngineUnlocked[4] = false;
             EngineUnlocked[5] = true;
-            Power += EnginePowerChanger[5];
+            //Power += EnginePowerChanger[5];
             //Change button with .png
             TruePanel2[5].gameObject.SetActive(true);
-            Save();
+            BBPanel2[5].gameObject.SetActive(false);
         }
     }
     public void BuyButtonsManager()
@@ -617,6 +672,7 @@ public class Buttons : MonoBehaviour
         //Engine
         if (EngineUnlocked[0])
         {
+            Power = 800;
             BBPanel2[0].gameObject.SetActive(false);
             BBPanel2[1].gameObject.SetActive(true);
             BBPanel2[2].gameObject.SetActive(true);
@@ -633,6 +689,7 @@ public class Buttons : MonoBehaviour
         }
         if (EngineUnlocked[1])
         {
+            Power = 3000;
             BBPanel2[0].gameObject.SetActive(false);
             BBPanel2[1].gameObject.SetActive(false);
             BBPanel2[2].gameObject.SetActive(true);
@@ -649,6 +706,7 @@ public class Buttons : MonoBehaviour
         }
         if (EngineUnlocked[2])
         {
+            Power = 6000;
             BBPanel2[0].gameObject.SetActive(false);
             BBPanel2[1].gameObject.SetActive(false);
             BBPanel2[2].gameObject.SetActive(false);
@@ -665,6 +723,7 @@ public class Buttons : MonoBehaviour
         }
         if (EngineUnlocked[3])
         {
+            Power = 11000;
             BBPanel2[0].gameObject.SetActive(false);
             BBPanel2[1].gameObject.SetActive(false);
             BBPanel2[2].gameObject.SetActive(false);
@@ -681,6 +740,7 @@ public class Buttons : MonoBehaviour
         }
         if (EngineUnlocked[4])
         {
+            Power = 14000;
             BBPanel2[0].gameObject.SetActive(false);
             BBPanel2[1].gameObject.SetActive(false);
             BBPanel2[2].gameObject.SetActive(false);
@@ -697,6 +757,7 @@ public class Buttons : MonoBehaviour
         }
         if (EngineUnlocked[5])
         {
+            Power = 16200;
             BBPanel2[0].gameObject.SetActive(false);
             BBPanel2[1].gameObject.SetActive(false);
             BBPanel2[2].gameObject.SetActive(false);
@@ -826,12 +887,28 @@ public class Buttons : MonoBehaviour
 
         }
     }
+    public void AchievementsLoad()
+    {
+        if (!Ach1.activeSelf)
+        {
+            AchievementsScript.AchievmentsList[0] = true;
+        }
+
+    }
     public void MoneyAch()
     {
         if (Money >= 1000000)
         {
             AchievementsScript.AchievmentsList[1] = true;
         }
+        else if (Money <= 1000000)
+        {
+            AchievementsScript.AchievmentsList[1] = false;
+        }
+    }
+    public void AddMoney()
+    {
+        Money += 1000000;
     }
     public void OnTriggerEnter2D(Collider2D col)
     {
